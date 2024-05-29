@@ -11,6 +11,9 @@ import {
   TitleStatus,
 } from "./styles";
 import TaskView from "../taskView";
+import { Montserrat } from "next/font/google";
+
+const montserrat = Montserrat({ subsets: ["latin"] });
 
 export default function TasksList() {
   const [selectedTask, setSelectedTask] = useState<{
@@ -22,7 +25,7 @@ export default function TasksList() {
   } | null>(null);
 
   const handleCloseModal = () => {
-    setSelectedTask(null); // Define selectedTask como null para fechar o modal
+    setSelectedTask(null);
   };
 
   const renderTasksByStatus = (status: string) => {
@@ -33,10 +36,10 @@ export default function TasksList() {
         onClick={() => setSelectedTask(task)}
       >
         <TaskTitleContainer>
-          <TaskTitleText>{task.name}</TaskTitleText>
+          <TaskTitleText className={montserrat.className}>{task.name}</TaskTitleText>
         </TaskTitleContainer>
         <TaskDescriptionContainer>
-          <TaskDescriptionText>{task.description}</TaskDescriptionText>
+          <TaskDescriptionText className={montserrat.className}>{task.description}</TaskDescriptionText>
         </TaskDescriptionContainer>
       </TaskContainer>
     ));
@@ -45,7 +48,7 @@ export default function TasksList() {
   const renderSelectedTaskComponent = () => {
     if (!selectedTask) return null;
 
-    return <TaskView task={selectedTask} onClose={handleCloseModal} />; // Passa a função handleCloseModal como propriedade onClose
+    return <TaskView task={selectedTask} onClose={handleCloseModal} />;
   };
 
   return (

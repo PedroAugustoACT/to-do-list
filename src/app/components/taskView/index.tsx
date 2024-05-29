@@ -10,7 +10,15 @@ import {
   LabelText,
   SelectContainer,
   CloseButton,
+  ContentContainer,
+  OptionContainer,
+  Select, // Adicionado novo styled component para o select
+  Option, // Adicionado novo styled component para as opções do select
 } from "./styles";
+import { X, Trash2 } from "react-feather";
+import { Montserrat } from "next/font/google";
+
+const montserrat = Montserrat({ subsets: ["latin"] });
 
 interface Task {
   name: string;
@@ -37,37 +45,40 @@ export default function TaskView({ task, onClose }: TaskViewProps) {
     <Overlay>
       <MainContainer>
         <TitleContainer>
-          <TitleText></TitleText>
-          <TitleText>{task.name}</TitleText>
-          <CloseButton onClick={handleCloseModal}>X</CloseButton>
+          <CloseButton onClick={handleCloseModal}>
+            <X />
+          </CloseButton>
+          <TitleText className={montserrat.className}>{task.name}</TitleText>
+          <CloseButton onClick={handleCloseModal} title="Excluir tarefa">
+            <Trash2 /> 
+          </CloseButton>
         </TitleContainer>
-        <DescriptionContainer>
-          <LabelText>Descrição:</LabelText>
-          <DescriptionText>{task.description}</DescriptionText>
-        </DescriptionContainer>
-        <DescriptionContainer>
-          <LabelText>Data de criação:</LabelText>
-          <DateText>{task.creationDate}</DateText>
-        </DescriptionContainer>
-        <DescriptionContainer>
-          <LabelText>Alterar status:</LabelText>
+        <ContentContainer>
+          <DescriptionContainer>
+            <LabelText className={montserrat.className}>Descrição:</LabelText>
+            <DescriptionText className={montserrat.className}>{task.description}</DescriptionText>
+          </DescriptionContainer>
+          <DescriptionContainer>
+            <LabelText className={montserrat.className}>Data de criação:</LabelText>
+            <DateText className={montserrat.className}>{task.creationDate}</DateText>
+          </DescriptionContainer>
           <SelectContainer>
-            <select onChange={handleStatusChange}>
-              <option value="Pendente" selected={task.status === "Pendente"}>
-                Pendente
-              </option>
-              <option
-                value="Em Progresso"
-                selected={task.status === "Em Progresso"}
-              >
-                Em Progresso
-              </option>
-              <option value="Concluído" selected={task.status === "Concluído"}>
-                Concluído
-              </option>
-            </select>
+            <LabelText className={montserrat.className}>Alterar status:</LabelText>
+            <OptionContainer>
+              <Select onChange={handleStatusChange} className={montserrat.className}>
+                <Option value="Pendente" selected={task.status === "pendente" ? true : false}>
+                  Pendente
+                </Option>
+                <Option value="Em progresso" selected={task.status === "em progresso" ? true : false}>
+                  Em progresso
+                </Option>
+                <Option value="Concluído" selected={task.status === "concluído" ? true : false}>
+                  Concluído
+                </Option>
+              </Select>
+            </OptionContainer>
           </SelectContainer>
-        </DescriptionContainer>
+        </ContentContainer>
       </MainContainer>
     </Overlay>
   );

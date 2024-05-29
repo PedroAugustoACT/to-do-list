@@ -18,7 +18,7 @@ export const MainContainer = styled.div`
   flex-direction: column;
   align-items: center;
   width: 40%;
-  height: 17rem;
+  padding: 20px;
   position: fixed;
   top: 50%;
   left: 50%;
@@ -31,79 +31,99 @@ export const TitleContainer = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  margin-top: 0.6%;
-  width: 98%;
+  width: 100%;
 `;
 
 export const TitleText = styled.p`
   font-size: 18px;
   font-weight: bold;
   color: #232c33;
-  margin-top: 3%;
 `;
 
 export const ContentContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  justify-content: center;
-  margin-top: 3%;
-  width: 50%;
+  width: 100%;
+  margin-top: 20px;
 `;
 
 export const DescriptionContainer = styled.div`
-  margin-top: 4%;
-`;
-
-export const DescriptionText = styled.p`
-  font-size: 15px;
-  color: #232c33;
-  margin-top: 2%;
-`;
-
-export const DateText = styled.p`
-  font-size: 15px;
-  color: #232c33;
-  margin-top: 2%;
+  margin-top: 15px;
+  width: 100%;
 `;
 
 export const LabelText = styled.p`
   font-size: 16px;
   font-weight: bold;
   color: #232c33;
-  margin-right: 5px;
+  margin-bottom: 5px;
+`;
+
+export const StyledInput = styled.input`
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #232c33;
+  border-radius: 4px;
+  margin-top: 5px;
+  font-size: 14px;
+  color: #232c33;
+  background-color: transparent;
+
+  &::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+  }
+`;
+
+export const StyledTextarea = styled.textarea`
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #232c33;
+  border-radius: 4px;
+  margin-top: 5px;
+  font-size: 14px;
+  color: #232c33;
+  background-color: transparent;
+  resize: none;
 `;
 
 export const SelectContainer = styled.div`
-  margin-top: 4%;
+  margin-top: 15px;
+  width: 100%;
 `;
 
 export const OptionContainer = styled.div`
-  margin-top: 3%;
-`;
+  margin-top: 5px;
 
-export const Select = styled.select`
-  font-size: 15px;
-  padding: 5px;
-  border: 1px solid #232c33;
-  border-radius: 4px;
-  color: #232c33;
-  background-color: transparent;
-`;
-
-export const Option = styled.option`
-  font-size: 15px;
+  select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #232c33;
+    border-radius: 4px;
+    font-size: 14px;
+    color: #232c33;
+    background-color: transparent;
+  }
 `;
 
 export const CloseButton = styled.button`
-  margin-top: 10px;
   color: #ff6347;
   border: none;
   border-radius: 4px;
   cursor: pointer;
   font-size: 16px;
   background-color: transparent;
-  margin-right: 0.6rem;
   margin-left: 0.6rem;
   font-weight: bold;
+`;
+
+export const ConfirmButton = styled.button`
+  margin-top: 4%;
+  padding: 10px 20px;
+  background-color: #232c33;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
 `;
