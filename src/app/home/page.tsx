@@ -35,6 +35,7 @@ export default function HomePage() {
         <TitleContainer>
           <TitleText className={montserrat.className}>Minhas Tarefas</TitleText>
         </TitleContainer>
+        <TasksContainer>
         <ButtonContainer>
           <AddButton className={montserrat.className} onClick={handleAddButtonClick}>
             <PlusCircle size={24} />
@@ -44,7 +45,6 @@ export default function HomePage() {
         {showAddTask && (
           <AddTask onClose={handleCloseAddTask} />
         )}
-        <TasksContainer>
           <TasksList />
         </TasksContainer>
       </Main>

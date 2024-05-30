@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { TasksData } from "@/app/datas/tasks";
 import {
+  ListContainer,
   MainContainer,
   StatusContainer,
   TaskContainer,
@@ -36,10 +37,14 @@ export default function TasksList() {
         onClick={() => setSelectedTask(task)}
       >
         <TaskTitleContainer>
-          <TaskTitleText className={montserrat.className}>{task.name}</TaskTitleText>
+          <TaskTitleText className={montserrat.className}>
+            {task.name}
+          </TaskTitleText>
         </TaskTitleContainer>
         <TaskDescriptionContainer>
-          <TaskDescriptionText className={montserrat.className}>{task.description}</TaskDescriptionText>
+          <TaskDescriptionText className={montserrat.className}>
+            {task.description}
+          </TaskDescriptionText>
         </TaskDescriptionContainer>
       </TaskContainer>
     ));
@@ -55,17 +60,17 @@ export default function TasksList() {
     <MainContainer>
       <StatusContainer>
         <TitleStatus>Em Progresso</TitleStatus>
-        {renderTasksByStatus("em progresso")}
+        <ListContainer>{renderTasksByStatus("em progresso")}</ListContainer>
       </StatusContainer>
 
       <StatusContainer>
         <TitleStatus>Pendente</TitleStatus>
-        {renderTasksByStatus("pendente")}
+        <ListContainer>{renderTasksByStatus("pendente")}</ListContainer>
       </StatusContainer>
 
       <StatusContainer>
         <TitleStatus>Concluída</TitleStatus>
-        {renderTasksByStatus("concluída")}
+        <ListContainer>{renderTasksByStatus("concluída")}</ListContainer>
       </StatusContainer>
 
       <div>{renderSelectedTaskComponent()}</div>

@@ -61,5 +61,33 @@ export const TasksData = [
         description: "Ler pelo menos 20 páginas do livro atual",
         status: "concluída",
         creationDate: "28/05/2024"
-    }
+    },
+    {
+        index: "10",
+        name: "Responder e-mails",
+        description: "Responder às mensagens acumuladas do trabalho",
+        status: "pendente",
+        creationDate: "27/05/2024"
+    },
+    {
+        index: "11",
+        name: "Responder e-mails",
+        description: "Responder às mensagens acumuladas do trabalho",
+        status: "pendente",
+        creationDate: "27/05/2024"
+    },
+    {
+        index: "12",
+        name: "Responder e-mails",
+        description: "Responder às mensagens acumuladas do trabalho",
+        status: "pendente",
+        creationDate: "27/05/2024"
+    },
+    {
+        index: "13",
+        name: "Responder e-mails",
+        description: "Responder às mensagens acumuladas do trabalho",
+        status: "pendente",
+        creationDate: "27/05/2024"
+    },
 ];
