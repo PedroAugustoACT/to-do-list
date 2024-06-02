@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import {
   DateText,
   DescriptionContainer,
@@ -12,34 +13,97 @@ import {
   CloseButton,
   ContentContainer,
   OptionContainer,
-  Select, // Adicionado novo styled component para o select
-  Option, // Adicionado novo styled component para as opções do select
+  Select,
+  Option,
 } from "./styles";
 import { X, Trash2 } from "react-feather";
 import { Montserrat } from "next/font/google";
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 
-interface Task {
-  name: string;
-  description: string;
-  creationDate: string;
-  status: string;
-}
-
 interface TaskViewProps {
-  task: Task;
+  taskId: number;
   onClose: () => void;
 }
 
-export default function TaskView({ task, onClose }: TaskViewProps) {
-  const handleStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    console.log("Novo status selecionado:", e.target.value);
+interface Task {
+  id: number;
+  nome: string;
+  descricao: string;
+  status: string;
+  data_criacao: string;
+}
+
+export default function TaskView({ taskId, onClose }: TaskViewProps) {
+  const [task, setTask] = useState<Task | null>(null);
+  const [selectedStatus, setSelectedStatus] = useState<string>("");
+
+  useEffect(() => {
+    const fetchTaskById = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8080/tarefas/${taskId}`
+        );
+        setTask(response.data);
+        setSelectedStatus(response.data.status);
+      } catch (error) {
+        console.error("Error fetching task by ID:", error);
+        setTask(null);
+      }
+    };
+
+    fetchTaskById();
+  }, [taskId]);
+
+  const handleStatusChange = async (
+    e: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    const newStatus = e.target.value;
+    setSelectedStatus(newStatus);
+
+    try {
+      await axios.put(`http://localhost:8080/tarefas/${taskId}`, {
+        ...task,
+        status: newStatus,
+      });
+      setTask((prevTask: Task | null) => {
+        if (prevTask) {
+          return {
+            ...prevTask,
+            status: newStatus,
+          };
+        }
+        return null;
+      });
+    } catch (error) {
+      console.error("Error updating task status:", error);
+    }
   };
 
   const handleCloseModal = () => {
     onClose();
+    window.location.reload();
   };
+  
+
+  const handleDeleteTask = async () => {
+    try {
+      await axios.delete(`http://localhost:8080/tarefas/${taskId}`);
+      handleCloseModal();
+    } catch (error) {
+      console.error("Error deleting task:", error);
+    }
+  };
+
+  if (!task) {
+    return (
+      <Overlay>
+        <MainContainer>
+          <p>Carregando...</p>
+        </MainContainer>
+      </Overlay>
+    );
+  }
 
   return (
     <Overlay>
@@ -48,33 +112,39 @@ export default function TaskView({ task, onClose }: TaskViewProps) {
           <CloseButton onClick={handleCloseModal}>
             <X />
           </CloseButton>
-          <TitleText className={montserrat.className}>{task.name}</TitleText>
-          <CloseButton onClick={handleCloseModal} title="Excluir tarefa">
-            <Trash2 /> 
+          <TitleText className={montserrat.className}>{task.nome}</TitleText>
+          <CloseButton onClick={handleDeleteTask} title="Excluir tarefa">
+            <Trash2 />
           </CloseButton>
         </TitleContainer>
         <ContentContainer>
           <DescriptionContainer>
             <LabelText className={montserrat.className}>Descrição:</LabelText>
-            <DescriptionText className={montserrat.className}>{task.description}</DescriptionText>
+            <DescriptionText className={montserrat.className}>
+              {task.descricao}
+            </DescriptionText>
           </DescriptionContainer>
           <DescriptionContainer>
-            <LabelText className={montserrat.className}>Data de criação:</LabelText>
-            <DateText className={montserrat.className}>{task.creationDate}</DateText>
+            <LabelText className={montserrat.className}>
+              Data de criação:
+            </LabelText>
+            <DateText className={montserrat.className}>
+              {new Date(task.data_criacao).toLocaleDateString("pt-BR")}
+            </DateText>
           </DescriptionContainer>
           <SelectContainer>
-            <LabelText className={montserrat.className}>Alterar status:</LabelText>
+            <LabelText className={montserrat.className}>
+              Alterar status:
+            </LabelText>
             <OptionContainer>
-              <Select onChange={handleStatusChange} className={montserrat.className}>
-                <Option value="Pendente" selected={task.status === "pendente" ? true : false}>
-                  Pendente
-                </Option>
-                <Option value="Em progresso" selected={task.status === "em progresso" ? true : false}>
-                  Em progresso
-                </Option>
-                <Option value="Concluído" selected={task.status === "concluído" ? true : false}>
-                  Concluído
-                </Option>
+              <Select
+                value={selectedStatus}
+                onChange={handleStatusChange}
+                className={montserrat.className}
+              >
+                <Option value="pendente">Pendente</Option>
+                <Option value="em andamento">Em Andamento</Option>
+                <Option value="concluída">Concluída</Option>
               </Select>
             </OptionContainer>
           </SelectContainer>

@@ -1,4 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
+import { Formik, Form, Field } from "formik";
+import * as Yup from "yup";
+import axios from "axios";
 import {
   MainContainer,
   Overlay,
@@ -12,7 +15,7 @@ import {
   OptionContainer,
   StyledInput,
   StyledTextarea,
-  ConfirmButton // Adicionado novo styled component para o botão de confirmar
+  ConfirmButton,
 } from "./styles";
 import { X } from "react-feather";
 import { Montserrat } from "next/font/google";
@@ -24,17 +27,12 @@ interface TaskViewProps {
 }
 
 export default function AddTask({ onClose }: TaskViewProps) {
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [creationDate, setCreationDate] = useState("");
-  const [status, setStatus] = useState("Pendente");
-
   const handleCloseModal = () => {
     onClose();
   };
 
-  const handleConfirm = () => {
-    // Aqui você pode adicionar a lógica para confirmar a tarefa
+  const reloadPage = () => {
+    window.location.reload();
   };
 
   return (
@@ -47,51 +45,73 @@ export default function AddTask({ onClose }: TaskViewProps) {
           <TitleText className={montserrat.className}>Adicionar Tarefa</TitleText>
           <TitleText></TitleText>
         </TitleContainer>
-        <ContentContainer>
-          <DescriptionContainer>
-            <LabelText className={montserrat.className}>Nome:</LabelText>
-            <StyledInput
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className={montserrat.className}
-            />
-          </DescriptionContainer>
-          <DescriptionContainer>
-            <LabelText className={montserrat.className}>Descrição:</LabelText>
-            <StyledTextarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              className={montserrat.className}
-            />
-          </DescriptionContainer>
-          <DescriptionContainer>
-            <LabelText className={montserrat.className}>Data de criação:</LabelText>
-            <StyledInput
-              type="date"
-              value={creationDate}
-              onChange={(e) => setCreationDate(e.target.value)}
-              className={montserrat.className}
-            />
-          </DescriptionContainer>
-          <SelectContainer>
-            <LabelText className={montserrat.className}>Status:</LabelText>
-            <OptionContainer>
-              <select
-                value={status}
-                onChange={(e) => setStatus(e.target.value)}
+        <Formik
+          initialValues={{
+            nome: "",
+            descricao: "",
+            status: "pendente",
+          }}
+          validationSchema={Yup.object({
+            nome: Yup.string().required("Required"),
+            descricao: Yup.string().required("Required"),
+            status: Yup.string().required("Required"),
+          })}
+          onSubmit={async (values, { setSubmitting }) => {
+            console.log("Form values:", values); 
+            try {
+              await axios.post("http://localhost:8080/tarefas", values);
+              setSubmitting(false);
+              handleCloseModal();
+              reloadPage();
+            } catch (error) {
+              console.error("Error creating task:", error);
+              setSubmitting(false);
+            }
+          }}
+        >
+          {({ isSubmitting }) => (
+            <Form>
+              <ContentContainer>
+                <DescriptionContainer>
+                  <LabelText className={montserrat.className}>Nome:</LabelText>
+                  <Field
+                    as={StyledInput}
+                    name="nome"
+                    className={montserrat.className}
+                  />
+                </DescriptionContainer>
+                <DescriptionContainer>
+                  <LabelText className={montserrat.className}>Descrição:</LabelText>
+                  <Field
+                    as={StyledTextarea}
+                    name="descricao"
+                    className={montserrat.className}
+                  />
+                </DescriptionContainer>
+                <SelectContainer>
+                  <LabelText className={montserrat.className}>Status:</LabelText>
+                  <Field
+                    as="select"
+                    name="status"
+                    className={montserrat.className}
+                  >
+                    <option value="pendente">Pendente</option>
+                    <option value="em andamento">Em andamento</option>
+                    <option value="concluída">Concluída</option>
+                  </Field>
+                </SelectContainer>
+              </ContentContainer>
+              <ConfirmButton
+                type="submit"
+                disabled={isSubmitting}
                 className={montserrat.className}
               >
-                <option value="Pendente">Pendente</option>
-                <option value="Em progresso">Em progresso</option>
-                <option value="Concluído">Concluído</option>
-              </select>
-            </OptionContainer>
-          </SelectContainer>
-        </ContentContainer>
-        <ConfirmButton onClick={handleConfirm} className={montserrat.className}>Confirmar</ConfirmButton> 
+                {isSubmitting ? "Aguarde..." : "Confirmar"}
+              </ConfirmButton>
+            </Form>
+          )}
+        </Formik>
       </MainContainer>
     </Overlay>
   );
 }
-

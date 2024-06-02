@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { TasksData } from "@/app/datas/tasks";
+import { useState, useEffect } from "react";
+import axios from "axios";
 import {
   ListContainer,
   MainContainer,
@@ -12,60 +12,70 @@ import {
   TitleStatus,
 } from "./styles";
 import TaskView from "../taskView";
-import { Montserrat } from "next/font/google";
 
-const montserrat = Montserrat({ subsets: ["latin"] });
+interface Task {
+  id: number;
+  nome: string;
+  descricao: string;
+  status: string;
+}
 
 export default function TasksList() {
-  const [selectedTask, setSelectedTask] = useState<{
-    index: string;
-    name: string;
-    description: string;
-    status: string;
-    creationDate: string;
-  } | null>(null);
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+
+  useEffect(() => {
+    const fetchTasks = async () => {
+      try {
+        const response = await axios.get("http://localhost:8080/tarefas");
+        setTasks(response.data);
+      } catch (error) {
+        console.error("Error fetching tasks:", error);
+      }
+    };
+
+    fetchTasks(); 
+  }, []); 
 
   const handleCloseModal = () => {
     setSelectedTask(null);
   };
 
   const renderTasksByStatus = (status: string) => {
-    return TasksData.filter((task) => task.status === status).map((task) => (
-      <TaskContainer
-        key={task.index}
-        status={task.status}
-        onClick={() => setSelectedTask(task)}
-      >
-        <TaskTitleContainer>
-          <TaskTitleText className={montserrat.className}>
-            {task.name}
-          </TaskTitleText>
-        </TaskTitleContainer>
-        <TaskDescriptionContainer>
-          <TaskDescriptionText className={montserrat.className}>
-            {task.description}
-          </TaskDescriptionText>
-        </TaskDescriptionContainer>
-      </TaskContainer>
-    ));
+    return tasks
+      .filter((task) => task.status === status) // Filtrar as tarefas pelo status
+      .map((task) => (
+        <TaskContainer
+          key={task.id}
+          status={task.status}
+          onClick={() => setSelectedTask(task)}
+        >
+          <TaskTitleContainer>
+            <TaskTitleText>{task.nome}</TaskTitleText>
+          </TaskTitleContainer>
+          <TaskDescriptionContainer>
+            <TaskDescriptionText>{task.descricao}</TaskDescriptionText>
+          </TaskDescriptionContainer>
+        </TaskContainer>
+      ));
   };
 
   const renderSelectedTaskComponent = () => {
     if (!selectedTask) return null;
 
-    return <TaskView task={selectedTask} onClose={handleCloseModal} />;
+    return <TaskView taskId={selectedTask.id} onClose={handleCloseModal} />;
   };
 
   return (
     <MainContainer>
       <StatusContainer>
-        <TitleStatus>Em Progresso</TitleStatus>
-        <ListContainer>{renderTasksByStatus("em progresso")}</ListContainer>
+        <TitleStatus>Pendente</TitleStatus>
+        <ListContainer>{renderTasksByStatus("pendente")}</ListContainer>
       </StatusContainer>
 
       <StatusContainer>
-        <TitleStatus>Pendente</TitleStatus>
-        <ListContainer>{renderTasksByStatus("pendente")}</ListContainer>
+        <TitleStatus>Em andamento</TitleStatus>
+        <ListContainer>{renderTasksByStatus("em andamento")}</ListContainer>
       </StatusContainer>
 
       <StatusContainer>
