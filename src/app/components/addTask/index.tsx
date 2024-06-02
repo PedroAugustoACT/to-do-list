@@ -16,9 +16,11 @@ import {
   StyledInput,
   StyledTextarea,
   ConfirmButton,
+  ButtonContainer,
 } from "./styles";
 import { X } from "react-feather";
 import { Montserrat } from "next/font/google";
+import { Select } from "../taskView/styles";
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 
@@ -42,7 +44,9 @@ export default function AddTask({ onClose }: TaskViewProps) {
           <CloseButton onClick={handleCloseModal}>
             <X />
           </CloseButton>
-          <TitleText className={montserrat.className}>Adicionar Tarefa</TitleText>
+          <TitleText className={montserrat.className}>
+            Adicionar Tarefa
+          </TitleText>
           <TitleText></TitleText>
         </TitleContainer>
         <Formik
@@ -57,7 +61,7 @@ export default function AddTask({ onClose }: TaskViewProps) {
             status: Yup.string().required("Required"),
           })}
           onSubmit={async (values, { setSubmitting }) => {
-            console.log("Form values:", values); 
+            console.log("Form values:", values);
             try {
               await axios.post("http://localhost:8080/tarefas", values);
               setSubmitting(false);
@@ -70,7 +74,7 @@ export default function AddTask({ onClose }: TaskViewProps) {
           }}
         >
           {({ isSubmitting }) => (
-            <Form>
+            <Form style={{ width: "98%" }}>
               <ContentContainer>
                 <DescriptionContainer>
                   <LabelText className={montserrat.className}>Nome:</LabelText>
@@ -81,7 +85,9 @@ export default function AddTask({ onClose }: TaskViewProps) {
                   />
                 </DescriptionContainer>
                 <DescriptionContainer>
-                  <LabelText className={montserrat.className}>Descrição:</LabelText>
+                  <LabelText className={montserrat.className}>
+                    Descrição:
+                  </LabelText>
                   <Field
                     as={StyledTextarea}
                     name="descricao"
@@ -89,9 +95,11 @@ export default function AddTask({ onClose }: TaskViewProps) {
                   />
                 </DescriptionContainer>
                 <SelectContainer>
-                  <LabelText className={montserrat.className}>Status:</LabelText>
+                  <LabelText className={montserrat.className}>
+                    Status:
+                  </LabelText>
                   <Field
-                    as="select"
+                    as={Select}
                     name="status"
                     className={montserrat.className}
                   >
@@ -101,13 +109,15 @@ export default function AddTask({ onClose }: TaskViewProps) {
                   </Field>
                 </SelectContainer>
               </ContentContainer>
-              <ConfirmButton
-                type="submit"
-                disabled={isSubmitting}
-                className={montserrat.className}
-              >
-                {isSubmitting ? "Aguarde..." : "Confirmar"}
-              </ConfirmButton>
+              <ButtonContainer>
+                <ConfirmButton
+                  type="submit"
+                  disabled={isSubmitting}
+                  className={montserrat.className}
+                >
+                  {isSubmitting ? "Aguarde..." : "Confirmar"}
+                </ConfirmButton>
+              </ButtonContainer>
             </Form>
           )}
         </Formik>

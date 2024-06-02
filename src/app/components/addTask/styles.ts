@@ -117,6 +117,12 @@ export const CloseButton = styled.button`
   font-weight: bold;
 `;
 
+export const ButtonContainer = styled.div`
+display: flex;
+align-items: center;
+justify-content: center;
+`
+
 export const ConfirmButton = styled.button`
   margin-top: 4%;
   padding: 10px 20px;
