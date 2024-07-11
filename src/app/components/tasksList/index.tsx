@@ -1,5 +1,4 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
+import { useState } from "react";
 import {
   ListContainer,
   MainContainer,
@@ -20,22 +19,13 @@ interface Task {
   status: string;
 }
 
-export default function TasksList() {
-  const [tasks, setTasks] = useState<Task[]>([]);
+interface TasksListProps {
+  tasks: Task[];
+  onUpdateTasks: () => void;
+}
+
+export default function TasksList({ tasks, onUpdateTasks }: TasksListProps) {
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
-
-  useEffect(() => {
-    const fetchTasks = async () => {
-      try {
-        const response = await axios.get("http://localhost:8080/tarefas");
-        setTasks(response.data);
-      } catch (error) {
-        console.error("Error fetching tasks:", error);
-      }
-    };
-
-    fetchTasks(); 
-  }, []); 
 
   const handleCloseModal = () => {
     setSelectedTask(null);
@@ -43,7 +33,7 @@ export default function TasksList() {
 
   const renderTasksByStatus = (status: string) => {
     return tasks
-      .filter((task) => task.status === status) // Filtrar as tarefas pelo status
+      .filter((task) => task.status === status)
       .map((task) => (
         <TaskContainer
           key={task.id}
@@ -63,7 +53,7 @@ export default function TasksList() {
   const renderSelectedTaskComponent = () => {
     if (!selectedTask) return null;
 
-    return <TaskView taskId={selectedTask.id} onClose={handleCloseModal} />;
+    return <TaskView taskId={selectedTask.id} onClose={handleCloseModal} onUpdateTasks={onUpdateTasks} />;
   };
 
   return (

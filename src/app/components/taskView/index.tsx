@@ -24,6 +24,7 @@ const montserrat = Montserrat({ subsets: ["latin"] });
 interface TaskViewProps {
   taskId: number;
   onClose: () => void;
+  onUpdateTasks: () => void;
 }
 
 interface Task {
@@ -34,7 +35,7 @@ interface Task {
   data_criacao: string;
 }
 
-export default function TaskView({ taskId, onClose }: TaskViewProps) {
+export default function TaskView({ taskId, onClose, onUpdateTasks }: TaskViewProps) {
   const [task, setTask] = useState<Task | null>(null);
   const [selectedStatus, setSelectedStatus] = useState<string>("");
 
@@ -82,9 +83,8 @@ export default function TaskView({ taskId, onClose }: TaskViewProps) {
 
   const handleCloseModal = () => {
     onClose();
-    window.location.reload();
+    onUpdateTasks();
   };
-  
 
   const handleDeleteTask = async () => {
     try {

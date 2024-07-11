@@ -12,7 +12,6 @@ import {
   CloseButton,
   ContentContainer,
   DescriptionContainer,
-  OptionContainer,
   StyledInput,
   StyledTextarea,
   ConfirmButton,
@@ -24,17 +23,21 @@ import { Select } from "../taskView/styles";
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 
-interface TaskViewProps {
-  onClose: () => void;
+interface Task {
+  id: number;
+  nome: string;
+  descricao: string;
+  status: string;
 }
 
-export default function AddTask({ onClose }: TaskViewProps) {
+interface TaskViewProps {
+  onClose: () => void;
+  onAddTask: (task: Task) => void;
+}
+
+export default function AddTask({ onClose, onAddTask }: TaskViewProps) {
   const handleCloseModal = () => {
     onClose();
-  };
-
-  const reloadPage = () => {
-    window.location.reload();
   };
 
   return (
@@ -61,12 +64,11 @@ export default function AddTask({ onClose }: TaskViewProps) {
             status: Yup.string().required("Required"),
           })}
           onSubmit={async (values, { setSubmitting }) => {
-            console.log("Form values:", values);
             try {
-              await axios.post("http://localhost:8080/tarefas", values);
+              const response = await axios.post("http://localhost:8080/tarefas", values);
               setSubmitting(false);
               handleCloseModal();
-              reloadPage();
+              onAddTask(response.data);
             } catch (error) {
               console.error("Error creating task:", error);
               setSubmitting(false);
